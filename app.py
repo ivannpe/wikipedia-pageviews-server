@@ -15,11 +15,11 @@ def most_viewed_articles(date: str, granularity: str):
     Retrieves a list of the most viewed articles for a week or a month.
 
     Args:
-        date (str): Description of arg1
-        granularity (str): Description of arg2
+        date (str): Date in String format YYYYMMDD
+        granularity (str): Time period for search, weekly or monthly
 
     Returns:
-        JSON: Description of return value
+        List[Dict[str, str, str]]: List of Dictionaries containing Article name, rank, and number of views
     """
     d_date = datetime.strptime(date, "%Y%m%d")
 
@@ -41,12 +41,12 @@ def article_pageviews(article: str, date: str, granularity: str):
     Retrieves the view count of a specific article for a week or a month.
 
     Args:
-        article (str): Description of arg1
-        date (str): Description of arg2
-        granularity (str): Description of arg3
+        article (str): Article name formatted as would be searched in API call
+        date (str): Date in String format YYYYMMDD
+        granularity (str): Time period for search, weekly or monthly
 
     Returns:
-        JSON: Description of return value
+        JSON: JSON Object with Article name, Timestamp for granularity, and number of views
 
     """
 
@@ -82,11 +82,11 @@ def day_of_most_pageviews(article: str, date: str):
     Retrieves the day of the month where an article got the most page views.
 
     Args:
-        article (str): Description of arg1
-        date (str): Description of arg2
+        article (str): Article name formatted as would be searched in API call
+        date (str): Date in String format YYYYMMDD
 
     Returns:
-        JSON: Description of return value
+        JSON: JSON Object with Article name, Timestamp of the day with the most page views, and number of views
 
     """
     d_date = datetime.strptime(date, "%Y%m%d")
