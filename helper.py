@@ -1,21 +1,13 @@
 import asyncio
 import aiohttp
 import calendar
-import json
 
-import calendar
 from collections import defaultdict
-from datetime import datetime, date, timedelta
+from datetime import date, timedelta
 
 BASE_URL = "https://wikimedia.org/api/rest_v1/metrics/pageviews/"
-
 ARTICLE_ENDPOINT = "per-article/en.wikipedia/all-access/all-agents/"
-# ARTICLE_ARGS = "{page}/daily/{start:YYYYMMDD}/{end:YYYYMMDD}"
-
-
 MOST_VIEWED_ENDPOINT = "top/en.wikipedia/all-access/"
-# MOST_VIEWED_ARGS = "{year:YYYY}/{month:MM}/all-days"
-# MOST_VIEWED_ARGS_WEEKLY = "{year:YYYY}/{month:MM}/{days:DD}"
 HEADERS = {'User-Agent': 'GrowTherapyTakeHome/1.0 (ivannpe@gmail.com)'}
 
 async def most_viewed_articles_weekly_async(date: date):

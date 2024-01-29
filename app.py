@@ -1,46 +1,14 @@
 import asyncio
 import helper
-import json
 import requests
 
 from datetime import datetime
-from flask import Flask #, request, render_template 
-
-
-
+from flask import Flask, jsonify
 
 
 app = Flask(__name__)
 
-@app.route("/")
-def hello_world():
-    """
-    Summary line.
 
-    Extended description of function.
-
-    Parameters
-    ----------
-    arg1 : int
-        Description of arg1
-    arg2 : str
-        Description of arg2
-
-    Returns
-    -------
-    int
-        Description of return value
-
-    """
-    return "<p>Hello, World!</p>"
-
-
-#TODO - determine assumptions about what these all mean and what api calls will be used for them
-
-# if an article is not listed on a given day, you can assume it has 0 views
-# input: date, granularity
-# output: json of list of articles and their respective view count
-# 
 @app.route("/pageviews/top/<string:date>/<string:granularity>", methods=['GET'])
 def most_viewed_articles(date: str, granularity: str):
     """
@@ -59,7 +27,7 @@ def most_viewed_articles(date: str, granularity: str):
         result = asyncio.run(helper.most_viewed_articles_weekly_async(d_date))
 
         formatted_result = helper.aggregate_and_sort(result)
-        return json.dumps(formatted_result)
+        return formatted_result
     
     m_date = d_date.strftime("%Y/%m")
     response = requests.get(f'{helper.BASE_URL}{helper.MOST_VIEWED_ENDPOINT}{m_date}/all-days',headers=helper.HEADERS)
@@ -67,9 +35,6 @@ def most_viewed_articles(date: str, granularity: str):
     return helper.format_result(response.json())
 
 
-
-# input: article, date, granularity
-# output: view count, json
 @app.route("/pageviews/article/<string:article>/<string:date>/<string:granularity>", methods=['GET'])
 def article_pageviews(article: str, date: str, granularity: str):
     """
@@ -84,11 +49,33 @@ def article_pageviews(article: str, date: str, granularity: str):
         JSON: Description of return value
 
     """
-    return ""
 
-# input: article, date
-# output: day of month, json, page views
-# todo: sort through each day, keep track of MAX val in the month
+    d_date = datetime.strptime(date, "%Y%m%d")
+    if granularity == "weekly":
+        views = 0
+        start, end = helper.get_date_range(d_date, "weekly")
+        response = requests.get(f'{helper.BASE_URL}{helper.ARTICLE_ENDPOINT}{article}/daily/{start.strftime("%Y%m%d")}/{end.strftime("%Y%m%d")}', headers=helper.HEADERS)
+        for i in response.json()["items"]:
+            views += i["views"]
+        result =  {
+            "article": response.json()["items"][0]["article"],
+            "week": response.json()["items"][0]["timestamp"],
+            "views": views
+        }
+        return jsonify(result)
+    
+    start, end = helper.get_date_range(d_date, "monthly")
+    response = requests.get(f'{helper.BASE_URL}{helper.ARTICLE_ENDPOINT}{article}/monthly/{start.strftime("%Y%m%d")}/{end.strftime("%Y%m%d")}', headers=helper.HEADERS)
+
+    result = {
+        "article": response.json()["items"][0]["article"],
+        "month": response.json()["items"][0]["timestamp"],
+        "views": response.json()["items"][0]["views"]
+    }
+
+    return jsonify(result)
+
+
 @app.route("/pageviews/top/article/<string:article>/<string:date>/day", methods=['GET'])
 def day_of_most_pageviews(article: str, date: str):
     """
@@ -102,7 +89,27 @@ def day_of_most_pageviews(article: str, date: str):
         JSON: Description of return value
 
     """
-    return ""
+    d_date = datetime.strptime(date, "%Y%m%d")
+    start, end = helper.get_date_range(d_date, "monthly")
+    print(start, end)
+    response = requests.get(f'{helper.BASE_URL}{helper.ARTICLE_ENDPOINT}{article}/daily/{start.strftime("%Y%m%d")}/{end.strftime("%Y%m%d")}', headers=helper.HEADERS)
+    
+    max_views = 0
+    max_views_day = None
+
+    for day in response.json()["items"]:
+        timestamp = datetime.strptime(day["timestamp"], "%Y%m%d%H")
+      
+        if day["views"] > max_views:
+            max_views = day["views"]
+            max_views_day = timestamp.strftime("%Y-%m-%d")
+
+    result = {
+        "article": response.json()["items"][0]["article"],
+        "day": max_views_day,
+        "views": max_views
+    } 
+    return jsonify(result)
 
 
 if __name__ == '__main__':
