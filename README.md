@@ -92,7 +92,6 @@ curl -XGET "http://127.0.0.1:5000/pageviews/top/article/Albert_Einstein/20240119
 - Week starts on Monday
 - A week/month refers to a calendar week/month
 - Most Viewed Articles Weekly limited to 1000 entries similar to responses of other calls
-- Making README thorough to count as Documentation rather than using a service like SwaggerUI etc.
 
 ## Improvements & Next Steps
 - __Error Handling:__ I should be more thorough in Error Handling given the pageview api calls are sensitive to proper formatting of inputs to these endpoints. As well as many things are dependent on the success, `200` response of these calls.
