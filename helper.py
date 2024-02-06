@@ -8,7 +8,7 @@ from datetime import date, timedelta
 BASE_URL = "https://wikimedia.org/api/rest_v1/metrics/pageviews/"
 ARTICLE_ENDPOINT = "per-article/en.wikipedia/all-access/all-agents/"
 MOST_VIEWED_ENDPOINT = "top/en.wikipedia/all-access/"
-HEADERS = {'User-Agent': 'GrowTherapyTakeHome/1.0 (ivannpe@gmail.com)'}
+HEADERS = {'User-Agent': 'WikipediaPageviewsServer/1.0 (ivannpe@gmail.com)'}
 
 async def most_viewed_articles_weekly_async(date: date):
     """
