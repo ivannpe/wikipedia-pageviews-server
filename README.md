@@ -1,12 +1,12 @@
-# Grow Therapy Take Home - Ivanna Pena
+# Wikipedia Pageviews Server
 Web Server interacting with Wikipedia API
 
 
 ## Installation
 Clone Repository:
 ```sh
-$ git clone https://github.com/ivannpe/grow-therapy-take-home.git
-$ cd grow-therapy-take-home
+$ git clone https://github.com/ivannpe/wikipedia-pageviews-server.git
+$ cd wikipedia-pageviews-server
 ```
 Setup Virtual Environment:
 ```sh
